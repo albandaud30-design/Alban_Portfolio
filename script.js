@@ -1,3 +1,6 @@
+
+"use strict";
+
 // =========================================
 // MOBILE NAVIGATION
 // =========================================
@@ -5,37 +8,39 @@
 const menuToggle = document.getElementById("menu-toggle");
 const navMenu = document.getElementById("nav-menu");
 
+if (menuToggle && navMenu) {
+    // Open / close mobile menu
+    menuToggle.addEventListener("click", () => {
+        navMenu.classList.toggle("active");
 
-// Open / close mobile menu
-menuToggle.addEventListener("click", () => {
-
-    navMenu.classList.toggle("active");
-
-    const isOpen = navMenu.classList.contains("active");
-
-    menuToggle.setAttribute("aria-expanded", isOpen);
-
-});
-
-
-// Close menu when navigation link is clicked
-const navLinks = document.querySelectorAll(".nav-menu a");
-
-navLinks.forEach((link) => {
-
-    link.addEventListener("click", () => {
-
-        navMenu.classList.remove("active");
-
+        const isOpen = navMenu.classList.contains("active");
+        menuToggle.setAttribute("aria-expanded", String(isOpen));
         menuToggle.setAttribute(
-            "aria-expanded",
-            "false"
+            "aria-label",
+            isOpen ? "Close navigation menu" : "Open navigation menu"
         );
-
     });
 
-});
+    // Close menu when a navigation link is clicked
+    const navLinks = document.querySelectorAll(".nav-menu a");
 
+    navLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+            navMenu.classList.remove("active");
+            menuToggle.setAttribute("aria-expanded", "false");
+            menuToggle.setAttribute("aria-label", "Open navigation menu");
+        });
+    });
+
+    // Close menu with Escape key
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            navMenu.classList.remove("active");
+            menuToggle.setAttribute("aria-expanded", "false");
+            menuToggle.setAttribute("aria-label", "Open navigation menu");
+        }
+    });
+}
 
 // =========================================
 // NAVBAR ON SCROLL
@@ -43,56 +48,28 @@ navLinks.forEach((link) => {
 
 const header = document.querySelector(".header");
 
-window.addEventListener("scroll", () => {
+function updateNavbar() {
+    if (!header) return;
 
     if (window.scrollY > 50) {
-
-        header.style.background =
-            "rgba(8, 11, 19, 0.96)";
-
+        header.style.background = "rgba(8, 11, 19, 0.96)";
     } else {
-
-        header.style.background =
-            "rgba(11, 15, 25, 0.85)";
-
+        header.style.background = "rgba(11, 15, 25, 0.85)";
     }
+}
 
-});
-
+window.addEventListener("scroll", updateNavbar, { passive: true });
+updateNavbar();
 
 // =========================================
 // CURRENT YEAR
 // =========================================
 
-const yearElement =
-    document.querySelector(".footer p");
+const yearElement = document.querySelector(".footer p");
 
 if (yearElement) {
+    const currentYear = new Date().getFullYear();
 
-    const currentYear =
-        new Date().getFullYear();
-
-    yearElement.innerHTML =
+    yearElement.textContent =
         `© ${currentYear} Alban Daud. All rights reserved.`;
-
 }
-
-
-// =========================================
-// CLOSE MENU WITH ESCAPE KEY
-// =========================================
-
-document.addEventListener("keydown", (event) => {
-
-    if (event.key === "Escape") {
-
-        navMenu.classList.remove("active");
-
-        menuToggle.setAttribute(
-            "aria-expanded",
-            "false"
-        );
-
-    }
-
-});
